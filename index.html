@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Queen Cute Love Prompt Generator</title>
+  <style>
+    :root {
+      --bg1: #fff2f7;
+      --bg2: #ffd8e8;
+      --panel: rgba(255,255,255,0.72);
+      --panel-strong: rgba(255,255,255,0.9);
+      --line: rgba(185, 114, 145, 0.22);
+      --text: #5f2c46;
+      --muted: #8e5a73;
+      --accent: #d5568c;
+      --gold: #b8860b;
+      --shadow: 0 18px 50px rgba(173, 92, 126, 0.18);
+      --radius: 22px;
+      --success: #2b8a5a;
+      --warning: #9a5d00;
+      --error: #b13b5c;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.75), transparent 22%),
+        radial-gradient(circle at bottom right, rgba(255,220,234,0.8), transparent 28%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      min-height: 100vh;
+      padding: 28px;
+    }
+
+    .wrap {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--panel);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .sidebar, .main {
+      padding: 22px;
+    }
+
+    h1, h2, h3 {
+      margin: 0 0 12px;
+      line-height: 1.15;
+    }
+
+    h1 {
+      font-size: 2rem;
+      background: linear-gradient(90deg, var(--gold), #f8e29f, var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 800;
+    }
+
+    h2 {
+      font-size: 1.15rem;
+      color: var(--text);
+      margin-top: 24px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    h3 {
+      font-size: 1rem;
+      color: var(--accent);
+    }
+
+    p, li {
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.95), rgba(255,239,246,0.95));
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .desc-box,
+    .status-box,
+    .test-box {
+      background: var(--panel-strong);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      margin-top: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field.full { grid-column: 1 / -1; }
+
+    label {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    select, textarea, input {
+      width: 100%;
+      border: 1px solid rgba(189, 123, 152, 0.28);
+      background: rgba(255,255,255,0.9);
+      border-radius: 14px;
+      padding: 13px 14px;
+      font: inherit;
+      color: var(--text);
+      outline: none;
+      transition: 0.2s ease;
+    }
+
+    select:focus, textarea:focus, input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(213, 86, 140, 0.12);
+    }
+
+    textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+      box-shadow: 0 10px 25px rgba(173, 92, 126, 0.15);
+    }
+
+    button:hover { transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
+
+    .primary {
+      background: linear-gradient(90deg, var(--accent), #e57aa8);
+      color: white;
+    }
+
+    .secondary {
+      background: linear-gradient(90deg, #fff, #ffe8f1);
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+
+    .gold {
+      background: linear-gradient(90deg, #bf8f18, #f1d06c);
+      color: #6b4300;
+    }
+
+    .pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .pill {
+      border: 1px solid var(--line);
+      padding: 8px 11px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.78);
+      font-size: 0.84rem;
+      color: var(--muted);
+    }
+
+    .output {
+      min-height: 220px;
+      white-space: pre-wrap;
+      background: rgba(255,255,255,0.93);
+    }
+
+    .small {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .examples {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    .example-card {
+      background: rgba(255,255,255,0.82);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .status-message {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      background: rgba(255,255,255,0.8);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      min-height: 44px;
+    }
+
+    .status-success {
+      color: var(--success);
+      border-color: rgba(43, 138, 90, 0.22);
+      background: rgba(43, 138, 90, 0.08);
+    }
+
+    .status-warning {
+      color: var(--warning);
+      border-color: rgba(154, 93, 0, 0.22);
+      background: rgba(154, 93, 0, 0.08);
+    }
+
+    .status-error {
+      color: var(--error);
+      border-color: rgba(177, 59, 92, 0.22);
+      background: rgba(177, 59, 92, 0.08);
+    }
+
+    .test-list {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .test-pass { color: var(--success); }
+    .test-fail { color: var(--error); }
+
+    ul {
+      padding-left: 18px;
+      margin-top: 10px;
+    }
+
+    code.inline {
+      background: rgba(255,255,255,0.8);
+      border: 1px solid var(--line);
+      padding: 2px 7px;
+      border-radius: 8px;
+      color: var(--accent);
+    }
+
+    @media (max-width: 1100px) {
+      .wrap { grid-template-columns: 1fr; }
+      .grid, .examples { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <aside class="card sidebar">
+      <div class="badge">Luxury Glam Still Life Generator</div>
+      <h1>Queen Cute Love</h1>
+      <p><strong>What it does:</strong> This generator turns your pink-and-gold glam idea into polished AI prompts for luxury feminine still life art, product mockups, branding visuals, wall art, journals, mugs, covers, and digital products.</p>
+      <p><strong>Best for:</strong> glam art creators, feminine lifestyle brands, fashion and beauty mockups, luxury printable sellers, pink aesthetic shops, and soft royal visual concepts.</p>
+
+      <div class="desc-box">
+        <h3>Image Prompt Description Stage</h3>
+        <p>The reference image shows a dreamy luxury still life in a rich pink palette with glossy gold accents. The scene features a sparkling pink stiletto heel, a creamy gold cup with a jeweled pink heart emblem, a crystal perfume bottle with a faceted diamond cap, a floating ornate crown with pink gems and rhinestones, hanging crystal strands, feather textures, and scattered gemstone jewelry. The style feels feminine, glamorous, regal, soft, glossy, jewel-toned, romantic, and editorial, with warm light, high shine, elegant product styling, shallow depth of field, and a polished fantasy-luxury finish.</p>
+      </div>
+
+      <h2>Base Prompt Structure</h2>
+      <p class="small"><code class="inline">[subject scene], featuring [hero objects], with [materials and sparkle], styled in [color story], under [lighting], with [background], captured from [camera angle], composed as [composition], in [art style], with [mood], ultra-detailed, polished luxury finish</code></p>
+
+      <h2>Bonus Variations</h2>
+      <div class="pill-list">
+        <span class="pill">Soft Princess</span>
+        <span class="pill">Royal Glam</span>
+        <span class="pill">Editorial Luxe</span>
+        <span class="pill">Sparkle Fantasy</span>
+        <span class="pill">Cute Boutique</span>
+        <span class="pill">High-Shine Product Ad</span>
+      </div>
+
+      <h2>How to Use</h2>
+      <ul>
+        <li>Pick one option from each dropdown.</li>
+        <li>Click <strong>Generate Prompt</strong> to assemble your full prompt.</li>
+        <li>Use <strong>Randomize</strong> for quick inspiration.</li>
+        <li>Use <strong>Copy Output</strong> to copy the prompt when your browser allows it.</li>
+        <li>If copy is blocked, the app will select the text and show a manual copy message.</li>
+      </ul>
+
+      <h2>What You Can Create</h2>
+      <ul>
+        <li>wall art and printables</li>
+        <li>mug and tumbler designs</li>
+        <li>fashion and beauty promos</li>
+        <li>luxury pink product mockups</li>
+        <li>journal and planner covers</li>
+        <li>social media graphics</li>
+        <li>sticker and stationery art</li>
+      </ul>
+    </aside>
+
+    <main class="card main">
+      <h2>Fillable Dropdown Generator</h2>
+      <div class="grid" id="formGrid">
+        <div class="field">
+          <label for="sceneType">Scene Type</label>
+          <select id="sceneType"></select>
+        </div>
+        <div class="field">
+          <label for="heroFocus">Hero Focus</label>
+          <select id="heroFocus"></select>
+        </div>
+        <div class="field">
+          <label for="shoeStyle">Shoe Style</label>
+          <select id="shoeStyle"></select>
+        </div>
+        <div class="field">
+          <label for="crownStyle">Crown Style</label>
+          <select id="crownStyle"></select>
+        </div>
+        <div class="field">
+          <label for="cupStyle">Cup Style</label>
+          <select id="cupStyle"></select>
+        </div>
+        <div class="field">
+          <label for="perfumeStyle">Perfume Bottle</label>
+          <select id="perfumeStyle"></select>
+        </div>
+        <div class="field">
+          <label for="gemDetail">Gem Detail</label>
+          <select id="gemDetail"></select>
+        </div>
+        <div class="field">
+          <label for="metalFinish">Metal Finish</label>
+          <select id="metalFinish"></select>
+        </div>
+        <div class="field">
+          <label for="featherTexture">Feather / Soft Texture</label>
+          <select id="featherTexture"></select>
+        </div>
+        <div class="field">
+          <label for="colorStory">Color Story</label>
+          <select id="colorStory"></select>
+        </div>
+        <div class="field">
+          <label for="lighting">Lighting</label>
+          <select id="lighting"></select>
+        </div>
+        <div class="field">
+          <label for="shadowStyle">Shadow Style</label>
+          <select id="shadowStyle"></select>
+        </div>
+        <div class="field">
+          <label for="backgroundStyle">Background Style</label>
+          <select id="backgroundStyle"></select>
+        </div>
+        <div class="field">
+          <label for="cameraAngle">Camera Angle</label>
+          <select id="cameraAngle"></select>
+        </div>
+        <div class="field">
+          <label for="composition">Composition</label>
+          <select id="composition"></select>
+        </div>
+        <div class="field">
+          <label for="artStyle">Art Style</label>
+          <select id="artStyle"></select>
+        </div>
+        <div class="field">
+          <label for="mood">Mood</label>
+          <select id="mood"></select>
+        </div>
+        <div class="field">
+          <label for="useCase">Product Use Case</label>
+          <select id="useCase"></select>
+        </div>
+        <div class="field full">
+          <label for="customNotes">Custom Notes / Brand Details</label>
+          <textarea id="customNotes" placeholder="Add extra details like logo colors, words on the cup, more objects, a cleaner ad style, or a more fantasy finish..."></textarea>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="primary" id="generateBtn" type="button">Generate Prompt</button>
+        <button class="gold" id="randomBtn" type="button">Randomize</button>
+        <button class="secondary" id="copyBtn" type="button">Copy Output</button>
+        <button class="secondary" id="clearBtn" type="button">Clear All</button>
+      </div>
+
+      <div class="status-box">
+        <h3>Copy Status</h3>
+        <div id="statusMessage" class="status-message" aria-live="polite">Ready.</div>
+      </div>
+
+      <h2>Your Output Prompt</h2>
+      <textarea id="output" class="output" placeholder="Your finished prompt will appear here..."></textarea>
+
+      <div class="test-box">
+        <h3>Built-In Checks</h3>
+        <p class="small">These quick checks verify that prompt generation, clearing, and selection work without crashing, even when clipboard permissions are blocked.</p>
+        <ul id="testResults" class="test-list"></ul>
+      </div>
+
+      <h2>Example Prompts</h2>
+      <div class="examples">
+        <div class="example-card">
+          <h3>Example 1</h3>
+          <p>A dreamy feminine luxury still life featuring a glittering rose-pink stiletto, a floating gold crown dripping with blush crystals, a creamy champagne coffee mug with a jeweled heart emblem, and a faceted perfume bottle with a diamond cap, surrounded by scattered rhinestone jewelry and silky blush feathers, styled in warm pink, champagne gold, and crystal sparkle tones, under soft diffused glam studio lighting with delicate glowing shadows, against a feather-textured pink backdrop, shot from a slightly low front angle, balanced hero-product composition, glossy 3D editorial fantasy art, romantic royal mood, ultra-detailed, polished luxury finish.</p>
+        </div>
+        <div class="example-card">
+          <h3>Example 2</h3>
+          <p>A boutique beauty campaign still life centered on a jeweled gold mug and crystal perfume bottle, paired with a sparkling ballet-pink heel and a delicate princess tiara, with heart-cut gemstones, reflective gold trim, airy blush plumes, and hanging crystal strands, in candy pink, dusty rose, and soft gold hues, lit with luminous ad-style highlights and clean reflective shine, set in a soft-focus luxury vanity background, captured from a close-up editorial angle, layered product storytelling composition, high-shine luxury product art, sweet glamorous mood, ultra-detailed and premium.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const options = {
+      sceneType: [
+        'a dreamy luxury still life scene',
+        'a feminine royal product display',
+        'a glam vanity tabletop arrangement',
+        'a romantic boutique showcase scene',
+        'a pink fantasy fashion-accessory layout',
+        'an editorial luxury beauty still life'
+      ],
+      heroFocus: [
+        'a sparkling heel, jeweled mug, perfume bottle, and floating crown',
+        'a jeweled crown as the main royal centerpiece with luxury accessories',
+        'a glitter heel as the hero object with surrounding glam details',
+        'a luxe mug and perfume duo with fashion accessories',
+        'a balanced arrangement of crown, heel, mug, perfume, and gems',
+        'a crystal-heavy pink and gold object composition'
+      ],
+      shoeStyle: [
+        'rose-pink glitter stiletto pump',
+        'blush crystal-encrusted high heel',
+        'soft pink sequin pointed pump',
+        'champagne-pink glam stiletto with reflective sparkle',
+        'princess pink rhinestone heel',
+        'luxury boutique high heel dusted with glitter'
+      ],
+      crownStyle: [
+        'ornate gold crown with pink gems and rhinestones',
+        'floating royal tiara with heart and diamond jewels',
+        'baroque princess crown with crystal points',
+        'elegant gold crown with blush marquise stones',
+        'high-shine fantasy crown with layered pink jewels',
+        'delicate queen tiara with sparkling gem crosses'
+      ],
+      cupStyle: [
+        'a creamy gold ceramic mug with a large pink jeweled heart emblem',
+        'a soft champagne latte cup with rhinestone heart trim',
+        'a polished blush-gold mug with princess jewel detail',
+        'a warm ivory-gold cup with ornate glam centerpiece',
+        'a glossy luxury coffee mug with pink crystal hardware',
+        'a boutique-style mug with a faceted heart medallion'
+      ],
+      perfumeStyle: [
+        'a faceted glass perfume bottle with a diamond-like cap',
+        'a blush crystal perfume bottle with gold neck rings',
+        'a luxury fragrance bottle with a gemstone stopper',
+        'a square perfume bottle in glossy transparent pink glass',
+        'an elegant perfume vessel with a cut-crystal lid',
+        'a feminine fragrance bottle with a jewel-top silhouette'
+      ],
+      gemDetail: [
+        'scattered heart-cut crystals, rhinestone chains, and oversized pink gemstones',
+        'sparkling blush diamonds, faceted gems, and jeweled accents',
+        'glittering crystal strands with luxe pink stones',
+        'oversized princess-cut gems and delicate rhinestone trim',
+        'heart gems, marquise stones, and polished crystal sparkle',
+        'shimmering jewelry fragments and reflective gemstone pieces'
+      ],
+      metalFinish: [
+        'polished yellow gold detailing',
+        'champagne gold metallic trim',
+        'mirror-shine royal gold edges',
+        'warm gilded luxury accents',
+        'high-gloss metallic gold framing',
+        'soft reflective antique-gold highlights'
+      ],
+      featherTexture: [
+        'soft blush feathers flowing through the background',
+        'airy pink plumes adding soft movement',
+        'silky feather textures framing the scene',
+        'romantic feather layers with floating softness',
+        'fluffy pastel feathers and plush textures',
+        'velvety pink feather swirls with dreamy depth'
+      ],
+      colorStory: [
+        'blush pink, rose quartz, champagne gold, and crystal white',
+        'hot pink, soft rose, metallic gold, and glossy pearl',
+        'baby pink, dusty rose, warm ivory, and rich gold',
+        'princess pink, candy blush, honey gold, and diamond sparkle',
+        'mauve pink, peachy gold, crystal silver, and creamy beige',
+        'romantic rose, satin pink, gilded gold, and glassy highlights'
+      ],
+      lighting: [
+        'soft glam studio lighting with warm highlights',
+        'high-shine luxury ad lighting with polished reflections',
+        'dreamy diffused light with glowing sparkle',
+        'romantic boutique lighting with warm shimmer',
+        'editorial spotlighting with glossy product shine',
+        'luminous fantasy lighting with jewel reflections'
+      ],
+      shadowStyle: [
+        'delicate soft shadows',
+        'clean luxury product shadows',
+        'subtle glowing shadows with pastel falloff',
+        'gentle editorial shadows with depth',
+        'silky soft-focus shadows',
+        'refined shadows with reflective bounce light'
+      ],
+      backgroundStyle: [
+        'a feather-textured pink backdrop with hanging crystal strands',
+        'a dreamy blush luxury background with floating gems',
+        'a boutique vanity setting in soft-focus pink',
+        'a glossy romantic pink studio backdrop',
+        'a plush fashion-display background with jewel details',
+        'a feminine fantasy backdrop with satin-pink depth'
+      ],
+      cameraAngle: [
+        'slightly low front angle',
+        'close-up editorial angle',
+        'front-facing product hero view',
+        'three-quarter luxury ad angle',
+        'soft overhead fashion flat-lay angle',
+        'cinematic close crop with hero focus'
+      ],
+      composition: [
+        'balanced hero-object composition',
+        'layered luxury storytelling composition',
+        'centered royal showcase arrangement',
+        'asymmetrical boutique product styling',
+        'high-end magazine layout composition',
+        'richly detailed close-up still life composition'
+      ],
+      artStyle: [
+        'glossy 3D luxury illustration',
+        'high-end digital product art',
+        'editorial fantasy still life art',
+        'ultra-detailed glam concept render',
+        'romantic luxury ad-style artwork',
+        'soft royal couture-inspired digital art'
+      ],
+      mood: [
+        'romantic and regal',
+        'cute and luxurious',
+        'soft feminine glamour',
+        'playful princess elegance',
+        'high-end boutique charm',
+        'dreamy jeweled fantasy'
+      ],
+      useCase: [
+        'made for wall art and printable decor',
+        'made for mug, tumbler, and journal design',
+        'made for feminine beauty branding visuals',
+        'made for luxury fashion promo graphics',
+        'made for sticker packs and stationery art',
+        'made for social media marketing creatives'
+      ]
+    };
+
+    const fields = Object.keys(options);
+    const statusMessage = document.getElementById('statusMessage');
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function populateSelect(id, values) {
+      const select = document.getElementById(id);
+      select.innerHTML = '<option value="">Select an option</option>' + values.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
+    }
+
+    function setStatus(message, type) {
+      statusMessage.textContent = message;
+      statusMessage.className = 'status-message';
+      if (type) statusMessage.classList.add(`status-${type}`);
+    }
+
+    function getFieldValues() {
+      const values = {};
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        values[id] = el ? el.value.trim() : '';
+      });
+      return values;
+    }
+
+    function buildPrompt() {
+      const values = getFieldValues();
+      const customNotes = document.getElementById('customNotes').value.trim();
+
+      const parts = [
+        values.sceneType,
+        values.heroFocus ? `featuring ${values.heroFocus}` : '',
+        [values.shoeStyle, values.crownStyle, values.cupStyle, values.perfumeStyle].some(Boolean)
+          ? `including ${[values.shoeStyle, values.crownStyle, values.cupStyle, values.perfumeStyle].filter(Boolean).join(', ')}`
+          : '',
+        values.gemDetail ? `with ${values.gemDetail}` : '',
+        values.metalFinish ? `accented by ${values.metalFinish}` : '',
+        values.featherTexture ? `surrounded by ${values.featherTexture}` : '',
+        values.colorStory ? `styled in ${values.colorStory}` : '',
+        values.lighting ? `under ${values.lighting}` : '',
+        values.shadowStyle ? `with ${values.shadowStyle}` : '',
+        values.backgroundStyle ? `set against ${values.backgroundStyle}` : '',
+        values.cameraAngle ? `captured from a ${values.cameraAngle}` : '',
+        values.composition ? `with ${values.composition}` : '',
+        values.artStyle ? `in ${values.artStyle}` : '',
+        values.mood ? `with a ${values.mood} mood` : '',
+        values.useCase,
+        customNotes ? `additional details: ${customNotes}` : '',
+        'ultra-detailed, polished luxury finish, elegant sparkle, rich texture, high visual impact'
+      ].filter(Boolean);
+
+      const output = parts.length ? parts.join(', ') + '.' : '';
+      document.getElementById('output').value = output;
+      setStatus(output ? 'Prompt generated.' : 'Choose options to generate a prompt.', output ? 'success' : 'warning');
+      return output;
+    }
+
+    function randomize() {
+      fields.forEach(id => {
+        const select = document.getElementById(id);
+        const choices = options[id];
+        select.value = choices[Math.floor(Math.random() * choices.length)];
+      });
+      const randomNotes = [
+        'add floating rhinestones and a glossy ad-campaign finish',
+        'place the brand word QUEEN in elegant gold lettering',
+        'make the mug heart extra faceted and jewel-like',
+        'add more sparkle trails around the crown',
+        'keep the scene soft, feminine, and clean for product mockups',
+        'use luxury boutique styling with extra crystal shine'
+      ];
+      document.getElementById('customNotes').value = randomNotes[Math.floor(Math.random() * randomNotes.length)];
+      buildPrompt();
+    }
+
+    function clearAll() {
+      fields.forEach(id => {
+        const element = document.getElementById(id);
+        element.selectedIndex = 0;
+      });
+      document.getElementById('customNotes').value = '';
+      document.getElementById('output').value = '';
+      setStatus('All fields cleared.', 'warning');
+    }
+
+    function selectOutputText() {
+      const output = document.getElementById('output');
+      output.focus();
+      output.select();
+      output.setSelectionRange(0, output.value.length);
+      return output;
+    }
+
+    async function copyOutput() {
+      const output = document.getElementById('output');
+      const text = output.value;
+
+      if (!text.trim()) {
+        setStatus('There is no prompt to copy yet.', 'warning');
+        return false;
+      }
+
+      selectOutputText();
+
+      if (navigator.clipboard && window.isSecureContext) {
+        try {
+          await navigator.clipboard.writeText(text);
+          setStatus('Prompt copied to clipboard.', 'success');
+          flashCopyButton('Copied!');
+          return true;
+        } catch (error) {
+          // fall through to legacy/manual fallback
+        }
+      }
+
+      try {
+        const copied = document.execCommand('copy');
+        if (copied) {
+          setStatus('Prompt copied to clipboard.', 'success');
+          flashCopyButton('Copied!');
+          return true;
+        }
+      } catch (error) {
+        // ignored on purpose; manual fallback below handles blocked environments
+      }
+
+      setStatus('Clipboard copy is blocked here. Your prompt is selected—use Ctrl+C or Cmd+C to copy it manually.', 'warning');
+      flashCopyButton('Select & Copy');
+      return false;
+    }
+
+    function flashCopyButton(label) {
+      const btn = document.getElementById('copyBtn');
+      const original = btn.dataset.originalLabel || btn.textContent;
+      btn.dataset.originalLabel = original;
+      btn.textContent = label;
+      window.clearTimeout(btn._resetTimer);
+      btn._resetTimer = window.setTimeout(() => {
+        btn.textContent = original;
+      }, 1400);
+    }
+
+    function addTestResult(name, passed, details) {
+      const list = document.getElementById('testResults');
+      const item = document.createElement('li');
+      item.className = passed ? 'test-pass' : 'test-fail';
+      item.textContent = `${passed ? 'PASS' : 'FAIL'}: ${name}${details ? ` — ${details}` : ''}`;
+      list.appendChild(item);
+    }
+
+    function runTests() {
+      const list = document.getElementById('testResults');
+      list.innerHTML = '';
+
+      try {
+        populateSelect('sceneType', options.sceneType);
+        const sceneSelect = document.getElementById('sceneType');
+        addTestResult('Scene Type select is populated', sceneSelect.options.length === options.sceneType.length + 1, `found ${sceneSelect.options.length} options`);
+
+        document.getElementById('sceneType').value = options.sceneType[0];
+        document.getElementById('heroFocus').value = options.heroFocus[0];
+        document.getElementById('customNotes').value = 'test detail';
+        const generated = buildPrompt();
+        addTestResult('Prompt generation returns text', generated.length > 0, `length ${generated.length}`);
+        addTestResult('Prompt generation includes custom notes', generated.includes('test detail'), 'custom notes are appended');
+
+        selectOutputText();
+        const output = document.getElementById('output');
+        addTestResult('Output selection runs without crashing', output.selectionStart === 0 && output.selectionEnd === output.value.length, `selection ${output.selectionStart}-${output.selectionEnd}`);
+
+        clearAll();
+        addTestResult('Clear All empties the output', document.getElementById('output').value === '', 'output textarea cleared');
+      } catch (error) {
+        addTestResult('Unexpected runtime error during tests', false, error.message);
+      }
+    }
+
+    fields.forEach(id => populateSelect(id, options[id]));
+
+    document.getElementById('generateBtn').addEventListener('click', buildPrompt);
+    document.getElementById('randomBtn').addEventListener('click', randomize);
+    document.getElementById('clearBtn').addEventListener('click', clearAll);
+    document.getElementById('copyBtn').addEventListener('click', () => {
+      copyOutput();
+    });
+
+    setStatus('Ready.', null);
+    runTests();
+  </script>
+</body>
+</html>
